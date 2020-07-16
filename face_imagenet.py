@@ -89,8 +89,3 @@ plt.savefig('AccVal_acc')
 #save our model in order to use it with opencv for real-time detection
 model.save('my_face_mask.h5')
 
-
-
-
-
-

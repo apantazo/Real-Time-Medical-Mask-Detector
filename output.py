@@ -46,24 +46,3 @@ webcam.release()
 # Close all started windows
 cv2.destroyAllWindows()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
