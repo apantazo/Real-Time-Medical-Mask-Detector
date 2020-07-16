@@ -4,9 +4,6 @@ import numpy as np
 
 model=load_model("my_face_mask.h5")
 
-
-
-size = 4
 webcam = cv2.VideoCapture(0) #Use camera 0
 
 # We load the xml file
