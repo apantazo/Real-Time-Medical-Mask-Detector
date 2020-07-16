@@ -5,8 +5,6 @@ import numpy as np
 model=load_model("my_face_mask.h5")
 
 
-labels_dict={0:'mask',1:'no_mask'}
-color_dict={0:(0,255,0),1:(0,0,255),}
 
 size = 4
 webcam = cv2.VideoCapture(0) #Use camera 0
@@ -16,19 +14,11 @@ face = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
 while True:
     (rval, im) = webcam.read()
-    #Flip to act as a mirror
-    
-
-    # Resize the image to speed up detection
-    mini = cv2.resize(im, (im.shape[1] // size, im.shape[0] // size))
-
-    # detect MultiScale / faces 
-    faces = face.detectMultiScale(mini)
+    gray=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
+    faces=face.detectMultiScale(gray,1.3,5) 
 
     # Draw rectangles around each face
-    for f in faces:
-        (x, y, w, h) = [v * size for v in f] #Scale the shapesize backup
-        #Save just the rectangle faces in SubRecFaces
+    for (x,y,w,h) in faces:
         face_img = im[y:y+h, x:x+w]
         resized=cv2.resize(face_img,(224,224))
         normalized=resized/255.0
@@ -36,9 +26,7 @@ while True:
         reshaped = np.vstack([reshaped])
         result=model.predict(reshaped)
         print(result)
-        
-        label=np.argmax(result,axis=1)
-        
+              
         if result>0.5:
             cv2.rectangle(im,(x,y),(x+w,y+h),(0,0,255),2)
             cv2.rectangle(im,(x,y-40),(x+w,y),(0,0,255),-1)
@@ -47,10 +35,7 @@ while True:
             cv2.rectangle(im,(x,y),(x+w,y+h),(0,255,0),2)
             cv2.rectangle(im,(x,y-40),(x+w,y),(0,255,0),-1)
             cv2.putText(im, 'mask', (x, y-10),cv2.FONT_HERSHEY_SIMPLEX,0.8,(255,255,255),2)
-      
-        #cv2.rectangle(im,(x,y),(x+w,y+h),color_dict[label],2)
-        #cv2.rectangle(im,(x,y-40),(x+w,y),color_dict[label],-1)
-        #cv2.putText(im, labels_dict[label], (x, y-10),cv2.FONT_HERSHEY_SIMPLEX,0.8,(255,255,255),2)
+     
         
     # Show the image
     cv2.imshow('LIVE',   im)
